@@ -84,3 +84,41 @@ BEGIN
     CLOSE CURSOR_2;
 END;
 /
+------------------------------------------------------------------------------------------------------
+
+//Inserir dados na tabela membros2 pelo cursor
+CREATE TABLE membros2 (
+    ID NUMBER,
+    NOME VARCHAR2(255),
+    EMAIL VARCHAR2(255) 
+)
+
+
+DECLARE
+     CURSOR CURSOR_3 IS SELECT * FROM MEMBROS ;
+     c_id membros.id%type;
+     c_nome membros.nome%type;
+     c_email membros.email%type;
+
+BEGIN
+    OPEN CURSOR_3;
+
+    LOOP
+        FETCH CURSOR_3 INTO c_id, c_nome, c_email;
+        
+        EXIT WHEN CURSOR_3%NOTFOUND;
+        
+        INSERT INTO membros2(id, nome, email) VALUES(c_id, c_nome, c_email);
+    END LOOP;
+
+    CLOSE CURSOR_3;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF CURSOR_3%ISOPEN THEN
+                CLOSE CURSOR_3;
+            END IF;
+            RAISE;
+END;
+
+SELECT * FROM MEMBROS2;
